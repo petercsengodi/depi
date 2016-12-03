@@ -7,6 +7,12 @@ import java.util.Random;
 
 import hu.csega.depi.showcase.framework.DesignPatternInfo;
 import hu.csega.depi.showcase.framework.ShowcaseWindow;
+import hu.csega.depi.showcase.patterns.strategy.impl.DataItem;
+import hu.csega.depi.showcase.patterns.strategy.impl.DataSorter;
+import hu.csega.depi.showcase.patterns.strategy.impl.SortingByBrightness;
+import hu.csega.depi.showcase.patterns.strategy.impl.SortingByLength;
+import hu.csega.depi.showcase.patterns.strategy.impl.SortingByRedness;
+import hu.csega.depi.showcase.patterns.strategy.impl.SortingStrategy;
 
 public class ShowStrategyPattern extends ShowcaseWindow {
 
@@ -16,34 +22,33 @@ public class ShowStrategyPattern extends ShowcaseWindow {
 
 	@Override
 	protected void init() {
-		for(int i = 0; i < items.length; i++) {
-			if(items[i] == null)
-				items[i] = new DataItem();
+		if(items == null) {
+			items = new DataItem[50];
 
-			items[i].length = rnd.nextInt(300);
-			items[i].r = rnd.nextInt(256);
-			items[i].g = rnd.nextInt(256);
-			items[i].b = 255 - items[i].r;
+			for(int i = 0; i < items.length; i++) {
+				if(items[i] == null)
+					items[i] = new DataItem();
+
+				items[i].length = rnd.nextInt(300) + 1;
+				items[i].r = rnd.nextInt(256);
+				items[i].g = rnd.nextInt(256);
+				items[i].b = 255 - items[i].r;
+			}
 		}
+
+		clear();
 	}
 
 	@Override
 	protected void clear() {
-		cursor = 0;
+		sorter = new DataSorter(items);
+		sorter.setStrategy(selectedStrategy);
 	}
 
 	@Override
 	protected void doOneRound() {
-		synchronized (this) {
-			if(selectedStrategy.needsSwitching(items[cursor], items[cursor + 1])) {
-				DataItem tmp = items[cursor];
-				items[cursor] = items[cursor + 1];
-				items[cursor + 1] = tmp;
-			}
-
-			cursor++;
-			if(cursor >= items.length - 1)
-				cursor = 0;
+		synchronized (sorter) {
+			sorter.switchFirstItemsInIncorrectOrder();
 		}
 	}
 
@@ -55,24 +60,27 @@ public class ShowStrategyPattern extends ShowcaseWindow {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(inBox(e, 600, 20, 750, 100)) {
-			synchronized (this) {
+			synchronized (sorter) {
 				selectedStrategy = lengthStrategy;
+				sorter.setStrategy(selectedStrategy);
 			}
 
 			repaintCanvas();
 		}
 
 		if(inBox(e, 600, 120, 750, 200)) {
-			synchronized (this) {
+			synchronized (sorter) {
 				selectedStrategy = brightnessStrategy;
+				sorter.setStrategy(selectedStrategy);
 			}
 
 			repaintCanvas();
 		}
 
 		if(inBox(e, 600, 220, 750, 300)) {
-			synchronized (this) {
+			synchronized (sorter) {
 				selectedStrategy = redStrategy;
+				sorter.setStrategy(selectedStrategy);
 			}
 
 			repaintCanvas();
@@ -81,19 +89,16 @@ public class ShowStrategyPattern extends ShowcaseWindow {
 
 	@Override
 	protected void paint2d(Graphics2D g) {
-		int height = 550 / items.length;
+		int height = 550 / sorter.length();
 		int y = 20;
 
-		for(int i = 0; i < items.length; i++) {
-			if(i == cursor) {
-				g.setColor(Color.black);
-				g.fillRect(2, y + 2, 6, height-4);
-			}
-
-			DataItem item = items[i];
+		for(int i = 0; i < sorter.length(); i++) {
+			DataItem item = sorter.get(i);
+			g.setColor(Color.black);
+			g.drawRect(10, y, 302, height);
 			Color color = new Color(item.r, item.g, item.b);
 			g.setColor(color);
-			g.fillRect(10, y, item.length, height-2);
+			g.fillRect(11, y+1, item.length, height-2);
 			y += height;
 		}
 
@@ -118,44 +123,22 @@ public class ShowStrategyPattern extends ShowcaseWindow {
 
 	@Override
 	protected DesignPatternInfo info() {
-		return DesignPatternInfo.title(TITLE).resourceClass(this.getClass()).resourceName("hello.png");
+		return DesignPatternInfo.title(TITLE).resourceClass(this.getClass()).resourceName("strategy.png");
 	}
 
 	public static void main(String[] args) throws Exception {
 		new ShowStrategyPattern();
 	}
 
-	private Strategy lengthStrategy = new Strategy() {
+	private SortingStrategy lengthStrategy = new SortingByLength();
+	private SortingStrategy brightnessStrategy = new SortingByBrightness();
+	private SortingStrategy redStrategy = new SortingByRedness();
 
-		@Override
-		public boolean needsSwitching(DataItem first, DataItem second) {
-			return first.length > second.length;
-		}
-	};
+	private DataSorter sorter;
+	private SortingStrategy selectedStrategy = lengthStrategy;
 
-	private Strategy brightnessStrategy = new Strategy() {
-
-		@Override
-		public boolean needsSwitching(DataItem first, DataItem second) {
-			int lightFirst = first.r + first.g + first.b;
-			int lightSecond = second.r + second.g + second.b;
-			return lightFirst > lightSecond;
-		}
-	};
-
-	private Strategy redStrategy = new Strategy() {
-
-		@Override
-		public boolean needsSwitching(DataItem first, DataItem second) {
-			return first.r > second.r;
-		}
-	};
-
-	private Strategy selectedStrategy = lengthStrategy;
-
-	private DataItem[] items = new DataItem[50];
+	private DataItem[] items;
 	private Random rnd = new Random(System.currentTimeMillis());
-	private int cursor = 0;
 
 	private static final String TITLE = "Strategy Pattern";
 

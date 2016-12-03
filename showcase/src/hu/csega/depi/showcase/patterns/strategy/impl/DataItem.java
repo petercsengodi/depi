@@ -1,4 +1,4 @@
-package hu.csega.depi.showcase.patterns.strategy;
+package hu.csega.depi.showcase.patterns.strategy.impl;
 
 public class DataItem {
 
