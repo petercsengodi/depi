@@ -43,11 +43,11 @@ public class ShowLinearRegressionThirdDegree extends ShowcaseWindow {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		TrainingItem item = trainingData.getItems()[count];
+		TrainingItem item = trainingData.getItems()[count++];
 		item.x = e.getX() - 400;
 		item.y = e.getY() - 300;
-		error.setCount(++count);
-		algorythm.calculateMachine(machine, error, crossOverStrategy);
+
+		calculated = false;
 		repaintCanvas();
 	}
 
@@ -71,7 +71,14 @@ public class ShowLinearRegressionThirdDegree extends ShowcaseWindow {
 			g.drawLine(item.x - 10, item.y + 10, item.x + 10, item.y - 10);
 		}
 
-		machine.paint(g);
+		if(active && !calculated) {
+			error.setCount(count);
+			algorythm.calculateMachine(machine, error, crossOverStrategy);
+			calculated = true;
+		}
+
+		if(active)
+			machine.paint(g);
 
 		g.translate(-400, -300);
 
@@ -92,9 +99,11 @@ public class ShowLinearRegressionThirdDegree extends ShowcaseWindow {
 	public TrainingData trainingData;
 	public DistanceMinimumError error;
 	public Machine machine = new LinearRegressionThirdDegreeMachine();
-	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm();
+	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm(3, 1000);
 	public RandomCrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
-	public int count = 0;
+
+	private int count = 0;
+	private boolean calculated;
 
 	private static final String TITLE = "Linear Regression with more degrees";
 

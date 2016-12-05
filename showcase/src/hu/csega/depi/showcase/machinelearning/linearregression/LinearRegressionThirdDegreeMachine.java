@@ -1,10 +1,14 @@
 package hu.csega.depi.showcase.machinelearning.linearregression;
 
+import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.FLOAT_SIZE;
+import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.bytesToFloat;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
 import hu.csega.depi.showcase.machinelearning.common.Machine;
+import hu.csega.depi.showcase.machinelearning.common.MachineUtil;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.Chromosome;
 
 public class LinearRegressionThirdDegreeMachine implements Machine {
@@ -12,19 +16,15 @@ public class LinearRegressionThirdDegreeMachine implements Machine {
 	@Override
 	public void fillFromChromosome(Chromosome chromosome) {
 		byte[] genes = chromosome.getGenes();
-		params[0] = (int)(genes[0]);
-		params[1] = byteToDouble(genes[1]);
-		params[2] = byteToDouble(genes[2]) / 100.0;
-		params[3] = byteToDouble(genes[3]) / 10000.0;
+		for(int i = 0; i < params.length; i++)
+			params[i] = bytesToFloat(genes, i * FLOAT_SIZE);
 	}
 
 	@Override
 	public Chromosome toChromosome() {
-		byte[] genes = new byte[length()];
-		genes[0] = (byte)(params[0]);
-		genes[1] = doubleToByte(params[1]);
-		genes[2] = doubleToByte(params[2] * 100.0);
-		genes[3] = doubleToByte(params[3] * 10000.0);
+		byte[] genes = new byte[params.length * FLOAT_SIZE];
+		for(int i = 0; i < params.length; i++)
+			 MachineUtil.floatToBytes(params[i], genes, i * FLOAT_SIZE);
 		return new Chromosome(genes);
 	}
 
@@ -57,17 +57,5 @@ public class LinearRegressionThirdDegreeMachine implements Machine {
 		return (params[0] + params[1] * x + params[2] * x * x + params[3] * x * x * x);
 	}
 
-	private int length() {
-		return params.length;
-	}
-
-	private double byteToDouble(byte input) {
-		return (double)(input / 10.0);
-	}
-
-	private byte doubleToByte(double input) {
-		return (byte)(10 * input);
-	}
-
-	private double[] params = new double[4];
+	private float[] params = new float[4];
 }

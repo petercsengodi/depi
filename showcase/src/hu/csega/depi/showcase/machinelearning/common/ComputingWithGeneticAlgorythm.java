@@ -12,10 +12,12 @@ public class ComputingWithGeneticAlgorythm implements ComputingAlgorythm {
 
 	public ComputingWithGeneticAlgorythm() {
 		this.scale = 1;
+		this.rounds = 1000;
 	}
 
-	public ComputingWithGeneticAlgorythm(int scale) {
+	public ComputingWithGeneticAlgorythm(int scale, int rounds) {
 		this.scale = scale;
+		this.rounds = rounds;
 	}
 
 	@Override
@@ -32,18 +34,17 @@ public class ComputingWithGeneticAlgorythm implements ComputingAlgorythm {
 				.randomGenes(10, length)
 				.build();
 
-		int ROUNDS = 1000;
-		int DIV = ROUNDS / 10;
+		int DIV = rounds / 10;
 		System.out.print("[");
 
-		for(int rounds = 0; rounds < ROUNDS; rounds++) {
+		for(int round = 0; round < rounds; round++) {
 			population.initCrossOverStrategy(crossOverStrategy);
 			population.crossOverSameLength(100*scale, crossOverStrategy);
 			population.mutate(100*scale);
 			population.createRandomGenes(100*scale, length);
 			population.keep(200*scale);
 
-			if((rounds + 1) % DIV == 0)
+			if((round + 1) % DIV == 0)
 				System.out.print(".");
 		}
 
@@ -65,4 +66,5 @@ public class ComputingWithGeneticAlgorythm implements ComputingAlgorythm {
 	}
 
 	private int scale;
+	private int rounds;
 }

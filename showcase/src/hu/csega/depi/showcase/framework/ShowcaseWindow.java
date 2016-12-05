@@ -182,7 +182,7 @@ public abstract class ShowcaseWindow extends JFrame implements MouseListener, Mo
 	}
 
 	private ShowcaseCanvas canvas;
-	private boolean active;
+	protected boolean active;
 	private Thread thread;
 	private boolean inited = false;
 
