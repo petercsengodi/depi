@@ -26,13 +26,12 @@ public class LinearRegressionMachine implements Machine {
 
 	@Override
 	public double output(double[] input) {
-		if(input.length != 3) {
-			throw new RuntimeException(3 + " input variables expected");
+		if(input.length != 2) {
+			throw new RuntimeException(2 + " input variables expected");
 		}
 
-		double intputValue = input[1];
 		double calculatedValue = params[0] + params[1] * input[0];
-		return Math.pow(calculatedValue-intputValue, 2);
+		return calculatedValue;
 	}
 
 	@Override

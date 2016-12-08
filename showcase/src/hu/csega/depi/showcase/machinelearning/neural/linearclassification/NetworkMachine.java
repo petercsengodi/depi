@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import hu.csega.depi.showcase.machinelearning.common.Machine;
+import hu.csega.depi.showcase.machinelearning.common.Sigmoid;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.Chromosome;
 
 public class NetworkMachine implements Machine {
@@ -54,8 +55,8 @@ public class NetworkMachine implements Machine {
 
 	@Override
 	public double output(double[] input) {
-		if(input.length != 3) {
-			throw new RuntimeException(3 + " input variables expected");
+		if(input.length != 2) {
+			throw new RuntimeException(2 + " input variables expected");
 		}
 
 		// clear layers
@@ -85,9 +86,8 @@ public class NetworkMachine implements Machine {
 		}
 
 		// return output
-		double intputValue = input[2];
-		double calculatedValue = (secondLayer[0] > 0 ? 1 : 0);
-		return Math.pow(calculatedValue-intputValue, 2);
+		double calculatedValue = Sigmoid.of(secondLayer[0]);
+		return calculatedValue;
 	}
 
 	@Override

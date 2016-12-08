@@ -1,8 +1,9 @@
 package hu.csega.depi.showcase.machinelearning.neural.recognition;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class RecognitionCharacter {
+public class RecognitionCharacter implements Serializable {
 
 	public void fillFromImage(BufferedImage image, int cubeWidth, int cubeHeight) {
 		int color;
@@ -36,4 +37,7 @@ public class RecognitionCharacter {
 
 	public double[] data = new double[INPUTS];
 	public boolean accepted;
+
+	/** Default serial version UID. */
+	private static final long serialVersionUID = 1L;
 }

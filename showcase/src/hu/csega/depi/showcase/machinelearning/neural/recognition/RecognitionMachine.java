@@ -1,9 +1,9 @@
 package hu.csega.depi.showcase.machinelearning.neural.recognition;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 import hu.csega.depi.showcase.machinelearning.common.Machine;
+import hu.csega.depi.showcase.machinelearning.common.Sigmoid;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.Chromosome;
 
 public class RecognitionMachine implements Machine {
@@ -107,35 +107,12 @@ public class RecognitionMachine implements Machine {
 		}
 
 		// return output
-		double intputValue = input[2];
-		double calculatedValue = (thirdLayer[0] > 0 ? 1 : 0);
-		return Math.pow(calculatedValue-intputValue, 2);
+		double calculatedValue = Sigmoid.of(thirdLayer[0]);
+		return calculatedValue;
 	}
 
 	@Override
 	public void paint(Graphics2D g) {
-		g.setColor(Color.white);
-		g.fillRect(300, -300, 200, 600);
-
-		// draw NN
-
-
-
-		// draw MAP
-
-		g.setColor(Color.darkGray);
-
-		double[] input = new double[3];
-
-		for(int x = -299; x <= 299; x += 5) {
-			for(int y = -299; y <= 299; y += 5) {
-				input[0] = x;
-				input[1] = y;
-
-				if(output(input) < 0.5)
-					g.fillRect(x - 2, y - 2, 5, 5);
-			}
-		}
 	}
 
 	private int length() {

@@ -5,14 +5,13 @@ import hu.csega.depi.showcase.machinelearning.common.genetic.framework.DistanceF
 
 public class RecognitionDistanceMinimum implements DistanceFromOptimum {
 
-	public RecognitionDistanceMinimum(RecognitionMachine machine, RecognitionTrainingData data) {
+	public RecognitionDistanceMinimum(RecognitionMachine machine) {
 		this.machine = machine;
-		this.data = data;
-		this.count = data.items.length;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	public void setCount(RecognitionTrainingData data) {
+		this.data = data;
+		this.count = data.length;
 	}
 
 	@Override
@@ -23,7 +22,7 @@ public class RecognitionDistanceMinimum implements DistanceFromOptimum {
 
 		double sum = 0.0;
 		for(int i = 0; i < count; i++) {
-			sum += machine.output(items[i].data);
+			sum += Math.pow(machine.output(items[i].data) - (items[i].accepted ? 1 : 0), 2);
 		}
 
 		return sum;

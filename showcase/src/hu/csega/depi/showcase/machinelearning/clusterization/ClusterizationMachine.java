@@ -33,8 +33,8 @@ public class ClusterizationMachine implements Machine {
 
 	@Override
 	public double output(double[] input) {
-		if(input.length != 3) {
-			throw new RuntimeException(3 + " input variables expected");
+		if(input.length != 2) {
+			throw new RuntimeException(2 + " input variables expected");
 		}
 
 		double dist1 = d1(input[0], input[1]);

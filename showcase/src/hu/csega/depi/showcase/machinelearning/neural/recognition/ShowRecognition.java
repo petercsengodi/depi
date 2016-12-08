@@ -10,6 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -79,8 +82,73 @@ public class ShowRecognition extends ShowcaseWindow {
 			}
 		});
 
-		JMenuItem reset = new JMenuItem("Reset Training Data");
-		menuBar.add(reset);
+		JMenu mTrainingData = new JMenu("Training Data");
+		menuBar.add(mTrainingData);
+
+		JMenuItem train = new JMenuItem("Train machine");
+		mTrainingData.add(train);
+		train.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				error.setCount(trainingData);
+				algorythm.calculateMachine(machine, error, crossOverStrategy);
+				message = "Machine trained.";
+				calculated = true;
+				repaintCanvas();
+			}
+		});
+
+		JMenuItem load = new JMenuItem("Load");
+		mTrainingData.add(load);
+		load.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(ShowRecognition.this) == JFileChooser.APPROVE_OPTION) {
+				  File file = fileChooser.getSelectedFile();
+
+				  if(file.exists()) {
+						try {
+							trainingData = RecognitionTrainingData.load(file);
+							message = "Loaded.";
+						} catch (Exception ex) {
+							message = "Loading failed :-(";
+						}
+				  } else {
+						message = "Can't read file :-(";
+				  }
+				}
+
+				repaintCanvas();
+			}
+		});
+
+		JMenuItem save = new JMenuItem("Save");
+		mTrainingData.add(save);
+		save.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(ShowRecognition.this) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+
+					try {
+						RecognitionTrainingData.save(file, trainingData);
+						message = "Saved.";
+					} catch (Exception ex) {
+						message = "Saving failed :-(";
+					}
+				}
+
+				repaintCanvas();
+			}
+		});
+
+		JMenuItem reset = new JMenuItem("Reset");
+		mTrainingData.add(reset);
 		reset.addActionListener(new ActionListener() {
 
 			@Override
@@ -90,15 +158,6 @@ public class ShowRecognition extends ShowcaseWindow {
 			}
 		});
 
-		JMenuItem explanation = new JMenuItem("Explanation");
-		menuBar.add(explanation);
-		explanation.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				info().show(ShowRecognition.this);
-			}
-		});
 	}
 
 	@Override
@@ -106,7 +165,7 @@ public class ShowRecognition extends ShowcaseWindow {
 		if(trainingData == null) {
 			 trainingData = new RecognitionTrainingData();
 
-			 error = new RecognitionDistanceMinimum(machine, trainingData);
+			 error = new RecognitionDistanceMinimum(machine);
 		}
 
 		clearImage();
@@ -122,7 +181,7 @@ public class ShowRecognition extends ShowcaseWindow {
 	protected void clear() {
 		machine = new RecognitionMachine();
 		trainingData = new RecognitionTrainingData();
-		count = 0;
+		trainingData.length = 0;
 		clearImage();
 	}
 
@@ -131,7 +190,7 @@ public class ShowRecognition extends ShowcaseWindow {
 	}
 
 	public void pushExample(boolean accepted) {
-		if(count >= trainingData.items.length) {
+		if(trainingData.length >= trainingData.items.length) {
 			message = "Training data is full!";
 			repaintCanvas();
 			return;
@@ -141,19 +200,17 @@ public class ShowRecognition extends ShowcaseWindow {
 		c.fillFromImage(input, CUBE_WIDTH, CUBE_HEIGHT);
 		c.accepted = accepted;
 
-		trainingData.items[count++] = c;
-		message = "Training data count: " + count;
+		trainingData.items[trainingData.length++] = c;
+		message = "Training data count: " + trainingData.length;
 
 		clearImage();
-		calculated = false;
 		repaintCanvas();
 	}
 
 	public void hint() {
 		if(!calculated) {
-			error.setCount(count);
-			algorythm.calculateMachine(machine, error, crossOverStrategy);
-			calculated = true;
+			message = "Machine not trained, yet!";
+			return;
 		}
 
 		RecognitionCharacter c = new RecognitionCharacter();
@@ -201,11 +258,32 @@ public class ShowRecognition extends ShowcaseWindow {
 		if((e.getButton() & MouseEvent.BUTTON1) > 0) {
 			pressed = false;
 		}
+
+		message = "";
+		repaintCanvas();
 	}
 
 	@Override
 	protected void paint2d(Graphics2D g) {
+		// input panel
 		g.drawImage(input, 0, 0, null);
+
+
+		// cubes
+		toShow.fillFromImage(input, CUBE_WIDTH, CUBE_HEIGHT);
+		for(int x = 0; x < RecognitionCharacter.WIDTH; x++) {
+			for(int y = 0; y < RecognitionCharacter.HEIGHT; y++) {
+				double d = toShow.data[y * RecognitionCharacter.WIDTH + x];
+				if(d > 0.5)
+					g.setColor(Color.black);
+				else
+					g.setColor(Color.white);
+
+				g.fillRect(200 + x * 25, 20 + y * 25, 20, 20);
+			}
+		}
+
+		// everything else
 		g.setColor(Color.black);
 
 		if(message != null)
@@ -227,7 +305,6 @@ public class ShowRecognition extends ShowcaseWindow {
 	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm();
 	public RandomCrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
 
-	private int count = 0;
 	private boolean pressed;
 	private boolean calculated;
 	private String message;
@@ -237,6 +314,7 @@ public class ShowRecognition extends ShowcaseWindow {
 
 	private BufferedImage input = new BufferedImage(RecognitionCharacter.WIDTH * CUBE_WIDTH,
 			RecognitionCharacter.HEIGHT * CUBE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+	private RecognitionCharacter toShow = new RecognitionCharacter();
 
 	private static final String TITLE = "Neural Network 2";
 

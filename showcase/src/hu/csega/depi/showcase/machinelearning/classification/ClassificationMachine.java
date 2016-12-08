@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import hu.csega.depi.showcase.machinelearning.common.Machine;
+import hu.csega.depi.showcase.machinelearning.common.Sigmoid;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.Chromosome;
 
 public class ClassificationMachine implements Machine {
@@ -32,13 +33,12 @@ public class ClassificationMachine implements Machine {
 
 	@Override
 	public double output(double[] input) {
-		if(input.length != 3) {
-			throw new RuntimeException(3 + " input variables expected");
+		if(input.length != 2) {
+			throw new RuntimeException(2 + " input variables expected");
 		}
 
-		double intputValue = input[2];
-		double calculatedValue = v(input[0], input[1]) > 0 ? 1 : 0;
-		return Math.pow(calculatedValue-intputValue, 2);
+		double calculatedValue = Sigmoid.of(v(input[0], input[1]));
+		return calculatedValue;
 	}
 
 	@Override

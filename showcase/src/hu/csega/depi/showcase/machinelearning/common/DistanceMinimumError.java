@@ -26,15 +26,14 @@ public class DistanceMinimumError implements DistanceFromOptimum {
 			TrainingItem item = items[i];
 			input[0] = item.x;
 			input[1] = item.y;
-			input[2] = item.v;
 
-			sum += machine.output(input);
+			sum += Math.pow(machine.output(input) - item.v, 2);
 		}
 
 		return sum;
 	}
 
-	private double[] input = new double[3];
+	private double[] input = new double[2];
 	private int count;
 	private TrainingData data;
 	private Machine machine;
