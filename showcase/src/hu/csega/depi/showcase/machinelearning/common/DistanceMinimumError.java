@@ -5,25 +5,20 @@ import hu.csega.depi.showcase.machinelearning.common.genetic.framework.DistanceF
 
 public class DistanceMinimumError implements DistanceFromOptimum {
 
-	public DistanceMinimumError(Machine machine, TrainingData data) {
+	public DistanceMinimumError(Machine machine) {
 		this.machine = machine;
-		this.data = data;
-		this.count = data.getItems().length;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	public void setTrainingData(TrainingData data) {
+		this.data = data;
 	}
 
 	@Override
 	public double calculate(Chromosome chromosome) {
 		machine.fillFromChromosome(chromosome);
 
-		TrainingItem[] items = data.getItems();
-
 		double sum = 0.0;
-		for(int i = 0; i < count; i++) {
-			TrainingItem item = items[i];
+		for(TrainingItem item : data) {
 			input[0] = item.x;
 			input[1] = item.y;
 
@@ -31,11 +26,10 @@ public class DistanceMinimumError implements DistanceFromOptimum {
 			sum += diff * diff;
 		}
 
-		return sum / (2.0 * count);
+		return sum / (2.0 * data.getCount());
 	}
 
 	private double[] input = new double[2];
-	private int count;
 	private TrainingData data;
 	private Machine machine;
 

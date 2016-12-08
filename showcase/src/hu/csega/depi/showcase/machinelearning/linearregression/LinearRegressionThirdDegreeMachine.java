@@ -50,7 +50,9 @@ public class LinearRegressionThirdDegreeMachine implements Machine {
 	}
 
 	private double v(double x) {
-		return (params[0] + params[1] * x + params[2] * x * x + params[3] * x * x * x);
+		double x2 = x * x;
+		double x3 = x2 * x;
+		return (params[0] + params[1] * x + params[2] * x2 + params[3] * x3);
 	}
 
 	private float[] params = new float[4];

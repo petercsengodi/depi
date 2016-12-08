@@ -25,23 +25,20 @@ public class ShowLinearRegression extends ShowcaseWindow {
 			 trainingData = new LinearRegressionTrainingData();
 			 trainingData.init();
 
-			 error = new DistanceMinimumError(machine, trainingData);
+			 error = new DistanceMinimumError(new LinearRegressionMachine());
 		}
 	}
 
 	@Override
 	protected void clear() {
-		machine = new LinearRegressionMachine();
-		count = 0;
+		trainingData.clear();
+		repaintCanvas();
 	}
 
 	@Override
 	protected void doOneRound() {
-		TrainingItem[] items = trainingData.getItems();
-		if(count < items.length)
-			count++;
-
-		error.setCount(count);
+		trainingData.increaseCounter();
+		error.setTrainingData(trainingData);
 		algorythm.calculateMachine(machine, error, crossOverStrategy);
 	}
 
@@ -56,10 +53,7 @@ public class ShowLinearRegression extends ShowcaseWindow {
 		g.setStroke(new BasicStroke(3f));
 		g.setColor(Color.blue);
 
-		TrainingItem[] items = trainingData.getItems();
-
-		for(int i = 0; i < count; i++) {
-			TrainingItem item = items[i];
+		for(TrainingItem item : trainingData) {
 			g.drawLine(item.x - 10, item.y - 10, item.x + 10, item.y + 10);
 			g.drawLine(item.x - 10, item.y + 10, item.x + 10, item.y - 10);
 		}
@@ -86,7 +80,6 @@ public class ShowLinearRegression extends ShowcaseWindow {
 	public Machine machine = new LinearRegressionMachine();
 	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm();
 	public RandomCrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
-	public int count = 0;
 
 	private static final String TITLE = "Linear Regression";
 

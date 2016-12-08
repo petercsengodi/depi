@@ -6,16 +6,16 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 
 import hu.csega.depi.showcase.framework.DesignPatternInfo;
-import hu.csega.depi.showcase.framework.ShowcaseWindow;
 import hu.csega.depi.showcase.machinelearning.common.ComputingAlgorythm;
 import hu.csega.depi.showcase.machinelearning.common.ComputingWithGeneticAlgorythm;
 import hu.csega.depi.showcase.machinelearning.common.DistanceMinimumError;
 import hu.csega.depi.showcase.machinelearning.common.Machine;
+import hu.csega.depi.showcase.machinelearning.common.MachineLearningWindow;
 import hu.csega.depi.showcase.machinelearning.common.TrainingData;
 import hu.csega.depi.showcase.machinelearning.common.TrainingItem;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.RandomCrossOverStrategy;
 
-public class ShowLinearRegressionThirdDegree extends ShowcaseWindow {
+public class ShowLinearRegressionThirdDegree extends MachineLearningWindow {
 
 	protected ShowLinearRegressionThirdDegree() {
 		super(TITLE);
@@ -24,36 +24,30 @@ public class ShowLinearRegressionThirdDegree extends ShowcaseWindow {
 	@Override
 	protected void init() {
 		if(trainingData == null) {
-			 trainingData = new LinearRegressionThirdDegreeTrainingData();
+			 trainingData = new TrainingData();
 			 trainingData.init();
 
-			 error = new DistanceMinimumError(machine, trainingData);
+			 error = new DistanceMinimumError(new LinearRegressionThirdDegreeMachine());
 		}
 	}
 
 	@Override
 	protected void clear() {
-		machine = new LinearRegressionThirdDegreeMachine();
-		count = 0;
-	}
-
-	@Override
-	protected void doOneRound() {
+		trainingData.clear();
+		resetCalculated();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		TrainingItem item = trainingData.getItems()[count++];
-		item.x = e.getX() - 400;
-		item.v = item.y = e.getY() - 300;
-
-		calculated = false;
-		repaintCanvas();
+		TrainingItem item = new TrainingItem(e.getX() - 400, e.getY() - 300, e.getY() - 300);
+		trainingData.addItem(item);
+		resetCalculated();
 	}
 
 	@Override
-	protected long waitingTime() {
-		return 100l;
+	protected void training() {
+		error.setTrainingData(trainingData);
+		algorythm.calculateMachine(machine, error, crossOverStrategy);
 	}
 
 	@Override
@@ -63,21 +57,12 @@ public class ShowLinearRegressionThirdDegree extends ShowcaseWindow {
 		g.setStroke(new BasicStroke(3f));
 		g.setColor(Color.blue);
 
-		TrainingItem[] items = trainingData.getItems();
-
-		for(int i = 0; i < count; i++) {
-			TrainingItem item = items[i];
+		for(TrainingItem item: trainingData) {
 			g.drawLine(item.x - 10, item.y - 10, item.x + 10, item.y + 10);
 			g.drawLine(item.x - 10, item.y + 10, item.x + 10, item.y - 10);
 		}
 
-		if(active && !calculated) {
-			error.setCount(count);
-			algorythm.calculateMachine(machine, error, crossOverStrategy);
-			calculated = true;
-		}
-
-		if(active)
+		if(isCalculated())
 			machine.paint(g);
 
 		g.translate(-400, -300);
@@ -101,9 +86,6 @@ public class ShowLinearRegressionThirdDegree extends ShowcaseWindow {
 	public Machine machine = new LinearRegressionThirdDegreeMachine();
 	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm(3, 1000);
 	public RandomCrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
-
-	private int count = 0;
-	private boolean calculated;
 
 	private static final String TITLE = "Linear Regression with more degrees";
 
