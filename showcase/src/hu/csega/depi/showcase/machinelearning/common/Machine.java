@@ -8,7 +8,7 @@ public interface Machine {
 
 	void fillFromChromosome(Chromosome chromosome);
 
-	Chromosome toChromosome();
+	Chromosome adamAndEve();
 
 	double output(double[] input);
 

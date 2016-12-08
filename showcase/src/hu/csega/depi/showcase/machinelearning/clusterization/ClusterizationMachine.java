@@ -20,14 +20,8 @@ public class ClusterizationMachine implements Machine {
 	}
 
 	@Override
-	public Chromosome toChromosome() {
+	public Chromosome adamAndEve() {
 		byte[] genes = new byte[length()];
-		genes[0] = (byte)(params[0] / 2.0);
-		genes[1] = (byte)(params[1] / 2.0);
-		genes[2] = (byte)(params[2] / 2.0);
-		genes[3] = (byte)(params[3] / 2.0);
-		genes[4] = (byte)(params[4] / 2.0);
-		genes[5] = (byte)(params[5] / 2.0);
 		return new Chromosome(genes);
 	}
 

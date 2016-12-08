@@ -1,6 +1,6 @@
 package hu.csega.depi.showcase.machinelearning.classification;
 
-import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.FLOAT_SIZE;
+import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.VALUE_SIZE;
 import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.bytesToFloat;
 
 import java.awt.BasicStroke;
@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import hu.csega.depi.showcase.machinelearning.common.Machine;
-import hu.csega.depi.showcase.machinelearning.common.MachineUtil;
 import hu.csega.depi.showcase.machinelearning.common.Sigmoid;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.Chromosome;
 
@@ -18,14 +17,12 @@ public class ClassificationMachine implements Machine {
 	public void fillFromChromosome(Chromosome chromosome) {
 		byte[] genes = chromosome.getGenes();
 		for(int i = 0; i < params.length; i++)
-			params[i] = bytesToFloat(genes, i * FLOAT_SIZE);
+			params[i] = bytesToFloat(genes, i * VALUE_SIZE);
 	}
 
 	@Override
-	public Chromosome toChromosome() {
-		byte[] genes = new byte[params.length * FLOAT_SIZE];
-		for(int i = 0; i < params.length; i++)
-			 MachineUtil.floatToBytes(params[i], genes, i * FLOAT_SIZE);
+	public Chromosome adamAndEve() {
+		byte[] genes = new byte[params.length * VALUE_SIZE];
 		return new Chromosome(genes);
 	}
 

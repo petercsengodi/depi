@@ -1,9 +1,7 @@
 package hu.csega.depi.showcase.machinelearning.neural.linearclassification;
 
-import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.FLOAT_SIZE;
+import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.VALUE_SIZE;
 import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.bytesToFloat;
-import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.floatToBytes;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -25,38 +23,21 @@ public class NetworkMachine implements Machine {
 		for(int i = 0; i < HIDDEN_LAYER_NODES; i++) {
 			for(int j = 0; j < INPUT_PARAMETERS + 1; j++) {
 				firstParameters[i][j] = bytesToFloat(genes, counter);
-				counter += FLOAT_SIZE;
+				counter += VALUE_SIZE;
 			}
 		}
 
 		for(int i = 0; i < 1; i++) {
 			for(int j = 0; j < HIDDEN_LAYER_NODES + 1; j++) {
 				secondParameters[i][j] = bytesToFloat(genes, counter);
-				counter += FLOAT_SIZE;
+				counter += VALUE_SIZE;
 			}
 		}
 	}
 
 	@Override
-	public Chromosome toChromosome() {
+	public Chromosome adamAndEve() {
 		byte[] genes = new byte[length()];
-
-		int counter = 0;
-
-		for(int i = 0; i < HIDDEN_LAYER_NODES; i++) {
-			for(int j = 0; j < INPUT_PARAMETERS + 1; j++) {
-				floatToBytes(firstParameters[i][j], genes, counter);
-				counter += FLOAT_SIZE;
-			}
-		}
-
-		for(int i = 0; i < 1; i++) {
-			for(int j = 0; j < HIDDEN_LAYER_NODES + 1; j++) {
-				floatToBytes(secondParameters[i][j], genes, counter);
-				counter += FLOAT_SIZE;
-			}
-		}
-
 		return new Chromosome(genes);
 	}
 
@@ -127,7 +108,7 @@ public class NetworkMachine implements Machine {
 
 	private int length() {
 		int numberOfFloats = (INPUT_PARAMETERS + 1) * HIDDEN_LAYER_NODES + HIDDEN_LAYER_NODES + 1;
-		return numberOfFloats * FLOAT_SIZE;
+		return numberOfFloats * VALUE_SIZE;
 	}
 
 	private float[][] firstParameters = new float[HIDDEN_LAYER_NODES][INPUT_PARAMETERS + 1];

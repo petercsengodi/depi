@@ -25,7 +25,7 @@ public class ComputingWithGeneticAlgorythm implements ComputingAlgorythm {
 
 		long start = System.currentTimeMillis();
 
-		Chromosome adamAndEve = machine.toChromosome();
+		Chromosome adamAndEve = machine.adamAndEve();
 		int length = adamAndEve.getGenes().length;
 		System.out.println("Initial value: " + distance.calculate(adamAndEve));
 
