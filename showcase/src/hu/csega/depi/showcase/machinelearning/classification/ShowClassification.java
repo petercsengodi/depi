@@ -43,13 +43,12 @@ public class ShowClassification extends ShowcaseWindow {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		TrainingItem item = trainingData.getItems()[count];
+		TrainingItem item = trainingData.getItems()[count++];
 		item.x = e.getX() - 400;
 		item.y = e.getY() - 300;
 		item.v = (((e.getButton() & MouseEvent.BUTTON3) == MouseEvent.BUTTON3) ? 1 : 0);
 
-		error.setCount(++count);
-		algorythm.calculateMachine(machine, error, crossOverStrategy);
+		calculated = false;
 		repaintCanvas();
 	}
 
@@ -62,7 +61,14 @@ public class ShowClassification extends ShowcaseWindow {
 	protected void paint2d(Graphics2D g) {
 		g.translate(400, 300);
 
-		machine.paint(g);
+		if(active && !calculated) {
+			error.setCount(count);
+			algorythm.calculateMachine(machine, error, crossOverStrategy);
+			calculated = true;
+		}
+
+		if(active)
+			machine.paint(g);
 
 		g.setStroke(new BasicStroke(3f));
 		g.setColor(Color.blue);
@@ -96,7 +102,9 @@ public class ShowClassification extends ShowcaseWindow {
 	public Machine machine = new ClassificationMachine();
 	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm();
 	public RandomCrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
-	public int count = 0;
+
+	private int count = 0;
+	private boolean calculated;
 
 	private static final String TITLE = "Classification";
 

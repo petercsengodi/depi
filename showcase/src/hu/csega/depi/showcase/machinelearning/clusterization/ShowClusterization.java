@@ -34,23 +34,20 @@ public class ShowClusterization extends ShowcaseWindow {
 	protected void clear() {
 		machine = new ClusterizationMachine();
 		count = 0;
-		calculatedCount = 0;
+		calculated = false;
 	}
 
 	@Override
 	protected void doOneRound() {
-		stop();
-		algorythm.calculateMachine(machine, error, crossOverStrategy);
-		calculatedCount = count;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		TrainingItem item = trainingData.getItems()[count];
+		TrainingItem item = trainingData.getItems()[count++];
 		item.x = e.getX() - 400;
 		item.y = e.getY() - 300;
 
-		error.setCount(++count);
+		calculated = false;
 		repaintCanvas();
 	}
 
@@ -63,7 +60,14 @@ public class ShowClusterization extends ShowcaseWindow {
 	protected void paint2d(Graphics2D g) {
 		g.translate(400, 300);
 
-		machine.paint(g);
+		if(active && !calculated) {
+			error.setCount(count);
+			algorythm.calculateMachine(machine, error, crossOverStrategy);
+			calculated = true;
+		}
+
+		if(active)
+			machine.paint(g);
 
 		g.setStroke(new BasicStroke(3f));
 		g.setColor(Color.blue);
@@ -73,7 +77,7 @@ public class ShowClusterization extends ShowcaseWindow {
 		for(int i = 0; i < count; i++) {
 			TrainingItem item = items[i];
 
-			if(i < calculatedCount) {
+			if(active) {
 				switch(machine.output(item)) {
 				case 1:
 					g.setColor(Color.red);
@@ -113,8 +117,9 @@ public class ShowClusterization extends ShowcaseWindow {
 	public ClusterizationMachine machine = new ClusterizationMachine();
 	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm();
 	public RandomCrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
-	public int count = 0;
-	public int calculatedCount = 0;
+
+	private int count = 0;
+	private boolean calculated;
 
 	private static final String TITLE = "Clusterization";
 

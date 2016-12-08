@@ -1,7 +1,10 @@
 package hu.csega.depi.showcase.machinelearning.neural.recognition;
 
-import java.awt.Graphics2D;
+import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.FLOAT_SIZE;
+import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.bytesToFloat;
+import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.floatToBytes;
 
+import java.awt.Graphics2D;
 import hu.csega.depi.showcase.machinelearning.common.Machine;
 import hu.csega.depi.showcase.machinelearning.common.Sigmoid;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.Chromosome;
@@ -19,19 +22,22 @@ public class RecognitionMachine implements Machine {
 
 		for(int i = 0; i < HIDDEN_LAYER_NODES; i++) {
 			for(int j = 0; j < INPUT_PARAMETERS + 1; j++) {
-				firstParameters[i][j] = byteToDouble(genes[counter++]);
+				firstParameters[i][j] = bytesToFloat(genes, counter);
+				counter += FLOAT_SIZE;
 			}
 		}
 
 		for(int i = 0; i < HIDDEN_LAYER_NODES; i++) {
 			for(int j = 0; j < HIDDEN_LAYER_NODES + 1; j++) {
-				secondParameters[i][j] = byteToDouble(genes[counter++]);
+				secondParameters[i][j] = bytesToFloat(genes, counter);
+				counter += FLOAT_SIZE;
 			}
 		}
 
 		for(int i = 0; i < 1; i++) {
 			for(int j = 0; j < HIDDEN_LAYER_NODES + 1; j++) {
-				thirdParameters[i][j] = byteToDouble(genes[counter++]);
+				thirdParameters[i][j] = bytesToFloat(genes, counter);
+				counter += FLOAT_SIZE;
 			}
 		}
 	}
@@ -44,19 +50,22 @@ public class RecognitionMachine implements Machine {
 
 		for(int i = 0; i < HIDDEN_LAYER_NODES; i++) {
 			for(int j = 0; j < INPUT_PARAMETERS + 1; j++) {
-				genes[counter++] = doubleToByte(firstParameters[i][j]);
+				floatToBytes(firstParameters[i][j], genes, counter);
+				counter += FLOAT_SIZE;
 			}
 		}
 
 		for(int i = 0; i < HIDDEN_LAYER_NODES; i++) {
 			for(int j = 0; j < HIDDEN_LAYER_NODES + 1; j++) {
-				genes[counter++] = doubleToByte(secondParameters[i][j]);
+				floatToBytes(secondParameters[i][j], genes, counter);
+				counter += FLOAT_SIZE;
 			}
 		}
 
 		for(int i = 0; i < 1; i++) {
 			for(int j = 0; j < HIDDEN_LAYER_NODES + 1; j++) {
-				genes[counter++] = doubleToByte(thirdParameters[i][j]);
+				floatToBytes(thirdParameters[i][j], genes, counter);
+				counter += FLOAT_SIZE;
 			}
 		}
 
@@ -71,16 +80,16 @@ public class RecognitionMachine implements Machine {
 
 		// clear layers
 		for(int i = 0; i < HIDDEN_LAYER_NODES; i++)
-			firstLayer[i] = 0.0;
+			firstLayer[i] = 0.0f;
 		firstLayer[HIDDEN_LAYER_NODES] = 1;
 		for(int i = 0; i < HIDDEN_LAYER_NODES; i++)
-			secondLayer[i] = 0.0;
+			secondLayer[i] = 0.0f;
 		secondLayer[HIDDEN_LAYER_NODES] = 1;
-		thirdLayer[0] = 0.0;
+		thirdLayer[0] = 0.0f;
 
 		// fill input layer
 		for(int j = 0; j < INPUT_PARAMETERS; j++)
-			inputLayer[j] = input[j];
+			inputLayer[j] = (float)input[j];
 		inputLayer[INPUT_PARAMETERS] = 1;
 
 		// fill first layer
@@ -116,25 +125,18 @@ public class RecognitionMachine implements Machine {
 	}
 
 	private int length() {
-		return (INPUT_PARAMETERS + 1) * HIDDEN_LAYER_NODES + (HIDDEN_LAYER_NODES + 1) * HIDDEN_LAYER_NODES + HIDDEN_LAYER_NODES + 1;
+		int numberOfFloats = (INPUT_PARAMETERS + 1) * HIDDEN_LAYER_NODES + (HIDDEN_LAYER_NODES + 1) * HIDDEN_LAYER_NODES + HIDDEN_LAYER_NODES + 1;
+		return numberOfFloats * FLOAT_SIZE;
 	}
 
-	private double byteToDouble(byte input) {
-		return (double)(input / 10.0);
-	}
+	private float[][] firstParameters = new float[HIDDEN_LAYER_NODES][INPUT_PARAMETERS + 1];
+	private float[][] secondParameters = new float[HIDDEN_LAYER_NODES][HIDDEN_LAYER_NODES + 1];
+	private float[][] thirdParameters = new float[1][HIDDEN_LAYER_NODES + 1];
 
-	private byte doubleToByte(double input) {
-		return (byte)(10 * input);
-	}
-
-	private double[][] firstParameters = new double[HIDDEN_LAYER_NODES][INPUT_PARAMETERS + 1];
-	private double[][] secondParameters = new double[HIDDEN_LAYER_NODES][HIDDEN_LAYER_NODES + 1];
-	private double[][] thirdParameters = new double[1][HIDDEN_LAYER_NODES + 1];
-
-	private double[] inputLayer = new double[INPUT_PARAMETERS + 1];
-	private double[] firstLayer = new double[HIDDEN_LAYER_NODES + 1];
-	private double[] secondLayer = new double[HIDDEN_LAYER_NODES + 1];
-	private double[] thirdLayer = new double[1];
+	private float[] inputLayer = new float[INPUT_PARAMETERS + 1];
+	private float[] firstLayer = new float[HIDDEN_LAYER_NODES + 1];
+	private float[] secondLayer = new float[HIDDEN_LAYER_NODES + 1];
+	private float[] thirdLayer = new float[1];
 
 	public static final int INPUT_PARAMETERS = RecognitionCharacter.INPUTS;
 	public static final int HIDDEN_LAYER_NODES = 6;

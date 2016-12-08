@@ -25,7 +25,7 @@ public class RecognitionCharacter implements Serializable {
 				}
 
 				avg = count / num;
-				data[y * WIDTH + x] = (avg > 0.5 ? 1 : 0);
+				data[y * WIDTH + x] = (avg > 0.1 ? 1 : 0);
 			} // end for y
  		} // end for x
 

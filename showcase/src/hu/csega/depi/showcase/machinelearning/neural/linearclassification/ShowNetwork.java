@@ -23,6 +23,7 @@ public class ShowNetwork extends ShowcaseWindow {
 
 	@Override
 	protected void init() {
+		calculated = false;
 		if(trainingData == null) {
 			 trainingData = new NetworkTrainingData();
 			 trainingData.init();
@@ -43,13 +44,12 @@ public class ShowNetwork extends ShowcaseWindow {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		TrainingItem item = trainingData.getItems()[count];
-		item.x = e.getX() - 300;
+		TrainingItem item = trainingData.getItems()[count++];
+		item.x = e.getX() - 400;
 		item.y = e.getY() - 300;
 		item.v = (((e.getButton() & MouseEvent.BUTTON3) == MouseEvent.BUTTON3) ? 1 : 0);
 
-		error.setCount(++count);
-		algorythm.calculateMachine(machine, error, crossOverStrategy);
+		calculated = false;
 		repaintCanvas();
 	}
 
@@ -60,13 +60,18 @@ public class ShowNetwork extends ShowcaseWindow {
 
 	@Override
 	protected void paint2d(Graphics2D g) {
-		g.translate(300, 300);
+		g.translate(400, 300);
 
-		machine.paint(g);
+		if(active && !calculated) {
+			error.setCount(count);
+			algorythm.calculateMachine(machine, error, crossOverStrategy);
+			calculated = true;
+		}
+
+		if(active)
+			machine.paint(g);
 
 		g.setStroke(new BasicStroke(3f));
-		g.setColor(Color.blue);
-
 		TrainingItem[] items = trainingData.getItems();
 
 		for(int i = 0; i < count; i++) {
@@ -76,7 +81,7 @@ public class ShowNetwork extends ShowcaseWindow {
 			g.drawLine(item.x - 10, item.y + 10, item.x + 10, item.y - 10);
 		}
 
-		g.translate(-300, -300);
+		g.translate(-400, -300);
 
 		g.setColor(Color.BLACK);
 		g.drawString("Select your own dots! Left: green Right: red", 30, 30);
@@ -97,7 +102,9 @@ public class ShowNetwork extends ShowcaseWindow {
 	public Machine machine = new NetworkMachine();
 	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm();
 	public RandomCrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
-	public int count = 0;
+
+	private int count = 0;
+	private boolean calculated;
 
 	private static final String TITLE = "Neural Network";
 

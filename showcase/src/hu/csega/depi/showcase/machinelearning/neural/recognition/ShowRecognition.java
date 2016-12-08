@@ -162,6 +162,7 @@ public class ShowRecognition extends ShowcaseWindow {
 
 	@Override
 	protected void init() {
+		calculated = false;
 		if(trainingData == null) {
 			 trainingData = new RecognitionTrainingData();
 
