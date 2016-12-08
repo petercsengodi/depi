@@ -11,14 +11,14 @@ public class LinearRegressionTrainingData extends TrainingData {
 	public void init() {
 		Random rnd = new Random(System.currentTimeMillis());
 		for(int i = 0; i < items.length; i++) {
-			TrainingItem item = new TrainingItem(0, 0, 0);
-			item.x = rnd.nextInt(800) - 400;
+			int x = rnd.nextInt(800) - 400;
 			int e = rnd.nextInt(maxError*2) - maxError;
-			int value = (int)(C + (m * item.x) + e);
-			item.y = value;
-			item.v = value;
-			items[i] = item;
+			int value = (int)(C + (m * x) + e);
+			TrainingItem item = new TrainingItem(x, value, value);
+			addItem(item);
 		}
+
+		count = 0;
 	}
 
 	private static final int maxError = 50;

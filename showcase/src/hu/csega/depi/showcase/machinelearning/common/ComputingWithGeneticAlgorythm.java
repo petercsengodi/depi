@@ -31,7 +31,7 @@ public class ComputingWithGeneticAlgorythm implements ComputingAlgorythm {
 
 		Population population = Population.builder(distance)
 				.adamAndEve(adamAndEve)
-				.randomGenes(10, length)
+				.randomGenes(100, length)
 				.build();
 
 		int DIV = rounds / 10;

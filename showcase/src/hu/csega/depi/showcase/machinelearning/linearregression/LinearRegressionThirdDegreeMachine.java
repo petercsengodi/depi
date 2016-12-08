@@ -1,8 +1,5 @@
 package hu.csega.depi.showcase.machinelearning.linearregression;
 
-import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.VALUE_SIZE;
-import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.bytesToFloat;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,12 +13,12 @@ public class LinearRegressionThirdDegreeMachine implements Machine {
 	public void fillFromChromosome(Chromosome chromosome) {
 		byte[] genes = chromosome.getGenes();
 		for(int i = 0; i < params.length; i++)
-			params[i] = bytesToFloat(genes, i * VALUE_SIZE);
+			params[i] = (float)(genes[i] / Math.pow(100f,i));
 	}
 
 	@Override
 	public Chromosome adamAndEve() {
-		byte[] genes = new byte[params.length * VALUE_SIZE];
+		byte[] genes = new byte[params.length];
 		return new Chromosome(genes);
 	}
 
