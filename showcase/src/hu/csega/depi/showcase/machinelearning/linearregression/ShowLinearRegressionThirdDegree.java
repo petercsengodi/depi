@@ -45,7 +45,7 @@ public class ShowLinearRegressionThirdDegree extends ShowcaseWindow {
 	public void mouseClicked(MouseEvent e) {
 		TrainingItem item = trainingData.getItems()[count++];
 		item.x = e.getX() - 400;
-		item.y = e.getY() - 300;
+		item.v = item.y = e.getY() - 300;
 
 		calculated = false;
 		repaintCanvas();

@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 
 import hu.csega.depi.showcase.machinelearning.common.Machine;
 import hu.csega.depi.showcase.machinelearning.common.MachineUtil;
-import hu.csega.depi.showcase.machinelearning.common.Sigmoid;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.Chromosome;
 
 public class LinearRegressionThirdDegreeMachine implements Machine {
@@ -35,7 +34,7 @@ public class LinearRegressionThirdDegreeMachine implements Machine {
 			throw new RuntimeException(2 + " input variables expected");
 		}
 
-		double calculatedValue = Sigmoid.of(v(input[0]));
+		double calculatedValue = v(input[0]);
 		return calculatedValue;
 	}
 

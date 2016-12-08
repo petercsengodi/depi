@@ -11,8 +11,9 @@ public class LinearRegressionTrainingData extends TrainingData {
 	protected void initialize(TrainingItem item, Random rnd) {
 		item.x = rnd.nextInt(800) - 400;
 		int e = rnd.nextInt(maxError*2) - maxError;
-		item.y = (int)(C + (m * item.x) + e);
-		item.v = 0;
+		int value = (int)(C + (m * item.x) + e);
+		item.y = value;
+		item.v = value;
 	}
 
 	private static final int maxError = 50;

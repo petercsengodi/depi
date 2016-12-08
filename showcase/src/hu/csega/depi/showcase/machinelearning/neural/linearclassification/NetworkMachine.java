@@ -112,7 +112,7 @@ public class NetworkMachine implements Machine {
 		g.setStroke(new BasicStroke(2f));
 		g.setColor(Color.darkGray);
 
-		double[] input = new double[3];
+		double[] input = new double[2];
 
 		for(int x = -399; x <= 399; x += 5) {
 			for(int y = -299; y <= 299; y += 5) {

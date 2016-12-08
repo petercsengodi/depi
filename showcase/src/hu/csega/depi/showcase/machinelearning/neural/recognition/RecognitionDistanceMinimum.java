@@ -22,10 +22,12 @@ public class RecognitionDistanceMinimum implements DistanceFromOptimum {
 
 		double sum = 0.0;
 		for(int i = 0; i < count; i++) {
-			sum += Math.pow(machine.output(items[i].data) - (items[i].accepted ? 1 : 0), 2);
+			double shouldBe = (items[i].accepted ? 1 : 0);
+			double diff = shouldBe - machine.output(items[i].data);
+			sum += diff * diff;
 		}
 
-		return sum;
+		return sum / (2.0 * items.length);
 	}
 
 	private int count;
