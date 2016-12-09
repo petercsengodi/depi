@@ -53,16 +53,17 @@ public class NetworkMachine implements Machine {
 		firstLayer[HIDDEN_LAYER_NODES] = 1;
 		secondLayer[0] = 0.0f;
 
-		// fill input layer
-//		for(int j = 0; j < INPUT_PARAMETERS; j++)
-//			inputLayer[j] = (float)input[j];
-		float x = (float)input[0];
-		float y = (float)input[1];
+		float x = (float)input[0] / 400f;
+		float y = (float)input[1] / 400f;
 
-		inputLayer[0] = x;
-		inputLayer[1] = x * x;
-		inputLayer[2] = y;
-		inputLayer[3] = y * y;
+		inputLayer[0] = x  * 00;
+		inputLayer[1] = x * x * 10;
+		inputLayer[2] = y * 10;
+		inputLayer[3] = y * y * 10;
+
+		inputLayer[4] = (float)Math.sin(x * 10);
+		inputLayer[5] = (float)Math.sin(y * 10);
+		inputLayer[6] = x * y * 10;
 
 		inputLayer[INPUT_PARAMETERS] = 1;
 
@@ -118,7 +119,7 @@ public class NetworkMachine implements Machine {
 	private float[] firstLayer = new float[HIDDEN_LAYER_NODES + 1];
 	private float[] secondLayer = new float[1];
 
-	public static final int INPUT_PARAMETERS = 4;
+	public static final int INPUT_PARAMETERS = 7;
 	public static final int HIDDEN_LAYER_NODES = 10;
 
 }

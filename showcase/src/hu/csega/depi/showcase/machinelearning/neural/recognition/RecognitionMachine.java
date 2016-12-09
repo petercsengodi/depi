@@ -3,11 +3,34 @@ package hu.csega.depi.showcase.machinelearning.neural.recognition;
 import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.VALUE_SIZE;
 import static hu.csega.depi.showcase.machinelearning.common.MachineUtil.bytesToFloat;
 import java.awt.Graphics2D;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import hu.csega.depi.showcase.machinelearning.common.Machine;
 import hu.csega.depi.showcase.machinelearning.common.Sigmoid;
 import hu.csega.depi.showcase.machinelearning.common.genetic.framework.Chromosome;
 
-public class RecognitionMachine implements Machine {
+public class RecognitionMachine implements Machine, Serializable {
+
+	public static RecognitionMachine load(File f) {
+		try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(f))) {
+            return (RecognitionMachine) stream.readObject();
+	    } catch(Exception ex) {
+	        throw new RuntimeException("Loading failed!", ex);
+	    }
+	}
+
+    public static void save(File f, RecognitionMachine machine) {
+        try (ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(f))) {
+            stream.writeObject(machine);
+        } catch(Exception ex) {
+            throw new RuntimeException("Saving failed!", ex);
+        }
+    }
 
 	@Override
 	public void fillFromChromosome(Chromosome chromosome) {
@@ -114,5 +137,8 @@ public class RecognitionMachine implements Machine {
 
 	public static final int INPUT_PARAMETERS = RecognitionCharacter.INPUTS;
 	public static final int HIDDEN_LAYER_NODES = 6;
+
+	/** Default serial version UID. */
+	private static final long serialVersionUID = 1L;
 
 }

@@ -82,50 +82,10 @@ public class ShowRecognition extends ShowcaseWindow {
 			}
 		});
 
-		JMenu mTrainingData = new JMenu("Training Data");
+		JMenu mTrainingData = new JMenu("Training");
 		menuBar.add(mTrainingData);
 
-		JMenuItem train = new JMenuItem("Train machine");
-		mTrainingData.add(train);
-		train.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				error.setCount(trainingData);
-				algorythm.calculateMachine(machine, error, crossOverStrategy);
-				message = "Machine trained.";
-				calculated = true;
-				repaintCanvas();
-			}
-		});
-
-		JMenuItem load = new JMenuItem("Load");
-		mTrainingData.add(load);
-		load.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				if (fileChooser.showOpenDialog(ShowRecognition.this) == JFileChooser.APPROVE_OPTION) {
-				  File file = fileChooser.getSelectedFile();
-
-				  if(file.exists()) {
-						try {
-							trainingData = RecognitionTrainingData.load(file);
-							message = "Loaded.";
-						} catch (Exception ex) {
-							message = "Loading failed :-(";
-						}
-				  } else {
-						message = "Can't read file :-(";
-				  }
-				}
-
-				repaintCanvas();
-			}
-		});
-
-		JMenuItem save = new JMenuItem("Save");
+		JMenuItem save = new JMenuItem("Save Training Data");
 		mTrainingData.add(save);
 		save.addActionListener(new ActionListener() {
 
@@ -147,7 +107,102 @@ public class ShowRecognition extends ShowcaseWindow {
 			}
 		});
 
-		JMenuItem reset = new JMenuItem("Reset");
+		JMenuItem load = new JMenuItem("Load Training Data");
+		mTrainingData.add(load);
+		load.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(ShowRecognition.this) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+
+					if(file.exists()) {
+						try {
+							trainingData = RecognitionTrainingData.load(file);
+							calculated = false;
+							message = "Training data loaded. Count: " + trainingData.length;
+						} catch (Exception ex) {
+							message = "Loading failed :-(";
+						}
+					} else {
+						message = "Can't read file :-(";
+					}
+				}
+
+				repaintCanvas();
+			}
+		});
+
+		mTrainingData.addSeparator();
+
+		JMenuItem train = new JMenuItem("Train machine");
+		mTrainingData.add(train);
+		train.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				error.setCount(trainingData);
+				algorythm.calculateMachine(machine, error, crossOverStrategy);
+				message = "Machine trained.";
+				calculated = true;
+				repaintCanvas();
+			}
+		});
+
+		JMenuItem saveMachine = new JMenuItem("Save Machine");
+		mTrainingData.add(saveMachine);
+		saveMachine.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(ShowRecognition.this) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+
+					try {
+						RecognitionMachine.save(file, machine);
+						message = "Machine saved.";
+					} catch (Exception ex) {
+						message = "Saving failed :-(";
+					}
+				}
+
+				repaintCanvas();
+			}
+		});
+
+		JMenuItem loadMachine = new JMenuItem("Load Machine");
+		mTrainingData.add(loadMachine);
+		loadMachine.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				if (fileChooser.showOpenDialog(ShowRecognition.this) == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+
+					if(file.exists()) {
+						try {
+							machine = RecognitionMachine.load(file);
+							calculated = true;
+							message = "Machine loaded.";
+						} catch (Exception ex) {
+							message = "Loading failed :-(";
+						}
+					} else {
+						message = "Can't read file :-(";
+					}
+				}
+
+				repaintCanvas();
+			}
+		});
+
+
+		mTrainingData.addSeparator();
+
+		JMenuItem reset = new JMenuItem("Reset All");
 		mTrainingData.add(reset);
 		reset.addActionListener(new ActionListener() {
 
@@ -317,7 +372,7 @@ public class ShowRecognition extends ShowcaseWindow {
 			RecognitionCharacter.HEIGHT * CUBE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private RecognitionCharacter toShow = new RecognitionCharacter();
 
-	private static final String TITLE = "Neural Network 2";
+	private static final String TITLE = "Character Recognition with Neural Network";
 
 	/** Default serial version UID. */
 	private static final long serialVersionUID = 1L;

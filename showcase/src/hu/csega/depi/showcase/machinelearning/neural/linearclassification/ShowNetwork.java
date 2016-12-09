@@ -88,7 +88,7 @@ public class ShowNetwork extends MachineLearningWindow {
 	public ComputingAlgorythm algorythm = new ComputingWithGeneticAlgorythm();
 	public RandomCrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
 
-	private static final String TITLE = "Neural Network";
+	private static final String TITLE = "Classification with Neural Network";
 
 	/** Default serial version UID. */
 	private static final long serialVersionUID = 1L;
