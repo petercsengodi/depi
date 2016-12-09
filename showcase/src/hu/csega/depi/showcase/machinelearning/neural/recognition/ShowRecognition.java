@@ -266,6 +266,7 @@ public class ShowRecognition extends ShowcaseWindow {
 	public void hint() {
 		if(!calculated) {
 			message = "Machine not trained, yet!";
+			repaintCanvas();
 			return;
 		}
 
