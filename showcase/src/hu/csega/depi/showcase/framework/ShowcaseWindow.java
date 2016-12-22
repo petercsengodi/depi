@@ -1,6 +1,7 @@
 package hu.csega.depi.showcase.framework;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -143,6 +144,10 @@ public abstract class ShowcaseWindow extends JFrame implements MouseListener, Mo
 
 	protected void repaintCanvas() {
 		this.canvas.repaint();
+	}
+
+	protected void setCanvasBackground(Color bgColor) {
+		canvas.setCanvasBackground(bgColor);
 	}
 
 	@Override

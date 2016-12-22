@@ -28,7 +28,7 @@ public class ShowcaseCanvas extends JPanel {
 		window.ensureInited();
 
 		Graphics2D g2d = (Graphics2D) buffer.getGraphics();
-		g2d.setColor(Color.LIGHT_GRAY);
+		g2d.setColor(background);
 		g2d.fillRect(0, 0, DEFAULT_WINDOW_SIZE.width, DEFAULT_WINDOW_SIZE.height);
 		g2d.setColor(Color.black);
 
@@ -37,8 +37,14 @@ public class ShowcaseCanvas extends JPanel {
 		g.drawImage(buffer, 0, 0, null);
 	}
 
+	protected void setCanvasBackground(Color bgColor) {
+		this.background = bgColor;
+	}
+
 	private ShowcaseWindow window;
-	private BufferedImage buffer = new BufferedImage(DEFAULT_WINDOW_SIZE.width, DEFAULT_WINDOW_SIZE.height, BufferedImage.TYPE_INT_RGB);
+	private BufferedImage buffer = new BufferedImage(DEFAULT_WINDOW_SIZE.width, DEFAULT_WINDOW_SIZE.height, BufferedImage.TYPE_3BYTE_BGR);
+
+	private Color background = Color.LIGHT_GRAY;
 
 	/** Default serial version UID. */
 	private static final long serialVersionUID = 1L;
