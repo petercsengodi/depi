@@ -62,8 +62,6 @@ public class TreeRecursiveLines implements ChristmasDrawingStrategy {
 		g.setColor(c);
 		g.setStroke(new BasicStroke((float)(5*(1-rate*rate))));
 
-		double xx = x1*0.1 + x2 * 0.2;
-		double yy = y1*0.1 + y2 * 0.2;
 		g.drawLine((int)x1, (int)y1, (int)sx, (int)sy);
 	}
 
