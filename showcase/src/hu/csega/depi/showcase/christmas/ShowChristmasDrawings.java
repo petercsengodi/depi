@@ -14,6 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import hu.csega.depi.showcase.christmas.algorithms.ChristmasDrawingStrategy;
+import hu.csega.depi.showcase.christmas.algorithms.Cubes;
 import hu.csega.depi.showcase.christmas.algorithms.SimpleRecursiveLines;
 import hu.csega.depi.showcase.christmas.algorithms.TreeRecursiveLines;
 import hu.csega.depi.showcase.framework.DesignPatternInfo;
@@ -57,6 +58,17 @@ public class ShowChristmasDrawings extends ShowcaseWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				strategy = new TreeRecursiveLines();
+				repaintCanvas();
+			}
+		});
+
+		JMenuItem cubes = new JMenuItem("Present");
+		mDrawings.add(cubes);
+		cubes.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				strategy = new Cubes();
 				repaintCanvas();
 			}
 		});
