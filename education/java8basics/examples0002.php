@@ -55,7 +55,7 @@
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>JAVA 8: Primitives</title>
+    <title>JAVA 8: Objects</title>
     <meta name="author" content="csega">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="description" content="Amateur education site for programming languages, like Java 8.">
@@ -163,12 +163,12 @@
       &gt;
       <a href="./index.php">JAVA 8 basics</a>
       &gt;
-      1. series: Primitives
+      2. series: Objects
     </div>
 
     <hr/>
 
-    <h1>Primitives</h1>
+    <h1>Objects</h1>
 
     <div class="main">
 <?php ob_start(); ?><script type="text/plain"><?php ob_end_clean(); ?>
@@ -176,13 +176,17 @@
 <?php startExample(); ?>
 What will be the result?
 <?php startCode(); ?>
+class IntHolder {
+  public int x = 5;
+}
+
 public class Example {
   public static void main(String[] args) {
-    int x = 5;
+    IntHolder ih = new IntHolder();
     for(int i = 0; i < 10; i++) {
-      x += 2;
+      ih.x += 2;
     }
-    System.out.println("x = " + x);
+    System.out.println("x = " + ih.x);
   }
 }
 <?php endCode(); ?>
@@ -195,15 +199,75 @@ x = 25
 <?php startExample(); ?>
 What will be the result?
 <?php startCode(); ?>
+class IntHolder {
+  public int x = 5;
+}
+
 public class Example {
-  static void increase(int x) {
+  static void increase(IntHolder ih) {
+    for(int i = 0; i < 10; i++) {
+      ih.x += 2;
+    }
+  }
+
+  public static void main(String[] args) {
+    IntHolder ih = new IntHolder();
+    increase(ih);
+    System.out.println("x = " + ih.x);
+  }
+}
+<?php endCode(); ?>
+<?php solution(); ?>
+<?php startCode(); ?>
+x = 25
+<?php endCode(); ?>
+When the argument of the method is a kind of object, the reference will be copied, but the object itself will be the same, so the value of <b>x</b> will be increased.
+<?php endExample(); ?>
+
+<?php startExample(); ?>
+What will be the result?
+<?php startCode(); ?>
+class IntHolder {
+  public int x;
+
+  public IntHolder(int x) {
+    this.x = x;
+  }
+}
+
+public class Example {
+  static void increase(IntHolder ih) {
+    for(int i = 0; i < 10; i++) {
+      ih = new IntHolder(ih.x + 2);
+    }
+  }
+
+  public static void main(String[] args) {
+    IntHolder ih = new IntHolder(5);
+    increase(ih);
+    System.out.println("x = " + ih.x);
+  }
+}
+<?php endCode(); ?>
+<?php solution(); ?>
+<?php startCode(); ?>
+x = 5
+<?php endCode(); ?>
+When the argument of the method is a kind of object, the reference will be copied, so when the variable <b>ih</b> gets a new value inside the method, it will not affect the IntHolder instance outside of the method.
+<?php endExample(); ?>
+
+<?php startExample(); ?>
+What will be the result?
+<?php startCode(); ?>
+public class Example {
+  static void increase(Integer x) {
     for(int i = 0; i < 10; i++) {
       x += 2;
     }
   }
 
   public static void main(String[] args) {
-    int x = 5;
+    Integer x = 5;
     increase(x);
     System.out.println("x = " + x);
   }
@@ -213,24 +277,27 @@ public class Example {
 <?php startCode(); ?>
 x = 5
 <?php endCode(); ?>
-... since during a function call the value of the primitive will be copied instead of passing the reference of the primitive.
+When the <b>Integer</b> is passed as an argument, only the reference will be copied; but due to autoboxing the expression of
+<?php startCode(); ?>
+x += 2;
+<?php endCode(); ?>
+will not change the content of the (immutable) Integer object; rather, it will create a new instance, and will override the local <b>x</b> variable.
 <?php endExample(); ?>
 
 <?php startExample(); ?>
 What will be the result?
 <?php startCode(); ?>
 public class Example {
-  static int x = 5;
-
-  static void increase() {
+  static void increase(int[] array) {
     for(int i = 0; i < 10; i++) {
-      x += 2;
+      array[0] += 2;
     }
   }
 
   public static void main(String[] args) {
-    increase(x);
-    System.out.println("x = " + x);
+    int[] array = new int[] { 5 };
+    increase(array);
+    System.out.println("x = " + array[0]);
   }
 }
 <?php endCode(); ?>
@@ -238,227 +305,31 @@ public class Example {
 <?php startCode(); ?>
 x = 25
 <?php endCode(); ?>
+The array is an object, so its reference will be copied, but the array itself will be the same, and so changes in the elements will affect the original array variable as well.
 <?php endExample(); ?>
 
 <?php startExample(); ?>
 What will be the result?
 <?php startCode(); ?>
 public class Example {
-  static int x;
-
-  static void increase() {
+  static void increase(int[] array) {
     for(int i = 0; i < 10; i++) {
-      x += 2;
+      array = new int[] { array[0] + 2 };
     }
   }
 
   public static void main(String[] args) {
-    increase(x);
-    System.out.println("x = " + x);
+    int[] array = new int[] { 5 };
+    increase(array);
+    System.out.println("x = " + array[0]);
   }
 }
 <?php endCode(); ?>
 <?php solution(); ?>
 <?php startCode(); ?>
-x = 20
+x = 5
 <?php endCode(); ?>
-Member fields are initialized with default values even if not definied. (Numbers variables are initialized with zero, boolean variables are initialized with "false", objects are initialized with "null").
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    int x;
-    for(int i = 0; i < 10; i++) {
-      x += 2;
-    }
-    System.out.println("x = " + x);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-Can not be compiled, because local variables must always be initialized before reading it.
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    int x = 3;
-    int y = 0;
-    double result = x / y;
-    System.out.println("result = " + result);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-<?php startCode(); ?>
-Exception in thread "main" java.lang.ArithmeticException: / by zero
-        at Example.main(Example.java:5)
-<?php endCode(); ?>
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    int x = 3;
-    int y = 2;
-    double result = x / y;
-    System.out.println("result = " + result);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-<?php startCode(); ?>
-result = 1.0
-<?php endCode(); ?>
-First the integer division is done, whose result is a whole number; then it is converted to double.
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    int x = 3;
-    int y = 2;
-    double result = x / (double)y;
-    System.out.println("result = " + result);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-<?php startCode(); ?>
-result = 1.5
-<?php endCode(); ?>
-If any of the arguments is a floating point number, then both arguments will be converted to floating point numbers first, and then will the division be executed.
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    int x = 3;
-    int y = 0;
-    double result = x / (double)y;
-    System.out.println("result = " + result);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-<?php startCode(); ?>
-result = Infinity
-<?php endCode(); ?>
-When dividing with floating point numbers, division by zero is enabled.
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    int x = 0;
-    int y = 0;
-    double result = x / (double)y;
-    System.out.println("result = " + result);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-<?php startCode(); ?>
-result = NaN
-<?php endCode(); ?>
-When dividing with floating point numbers, division by zero is enabled.
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    int x = 5;
-    double result = x;
-    System.out.println("result = " + result);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-<?php startCode(); ?>
-result = 5.0
-<?php endCode(); ?>
-Integers can be converted to double with automatic conversion.
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    double x = 5.3;
-    int result = x;
-    System.out.println("result = " + result);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-Can not be compiled. Double has a wider range then int, so it can not be casted implicitly.
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-public class Example {
-  public static void main(String[] args) {
-    double x = 5.3;
-    int result = (int)x;
-    System.out.println("result = " + result);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-<?php startCode(); ?>
-result = 5
-<?php endCode(); ?>
-Double has a wider range then int, so it can not be casted implicitly; 
-however, explicit casting works, with the restriction, that the result will be a whole number.
-<?php endExample(); ?>
-
-<?php startExample(); ?>
-What will be the result?
-<?php startCode(); ?>
-class Example {
-  public static void main(String[] args) {
-    double x = 0;
-    while(x != 1.0) {
-      x += 0.1;
-    }
-    System.out.println("x = " + x);
-  }
-}
-<?php endCode(); ?>
-<?php solution(); ?>
-Will run in an infinite loop. Since floating point numbers have a finite precision, the value of <b>x</b> will never be exactly 1.0;
-rather, something like 0.99999... We never use equality check on double or float types.
-Either inequality should be checked:
-<?php startCode(); ?>
-while(x < 1.0) {
-  x += 0.1;
-}
-<?php endCode(); ?>
-... or we check, if its values is "near something":
-<?php startCode(); ?>
-while(true) {
-  x += 0.1;
-  if(Math.abs(x - 1.0) < 0.00001)
-    break;
-}
-<?php endCode(); ?>
+The array is an objext, so its the reference will be copied, and when the variable <b>array</b> gets a new value inside the method, it will not affect the array outside of the method.
 <?php endExample(); ?>
 
 <?php ob_start(); ?></script><?php ob_end_clean(); ?>

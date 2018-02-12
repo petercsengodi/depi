@@ -79,7 +79,8 @@
 
     <div class="main">
 
-      <div class="tile" onclick="window.location = './examples0001.php'">1. series: Primitives<div>
+      <div class="tile" onclick="window.location = './examples0001.php'">1. series: Primitives</div>
+      <div class="tile" onclick="window.location = './examples0002.php'">2. series: Objects</div>
 
     <div><!-- main -->
 
