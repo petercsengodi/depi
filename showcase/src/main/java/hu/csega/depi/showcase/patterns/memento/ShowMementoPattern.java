@@ -8,6 +8,11 @@ import hu.csega.depi.showcase.framework.DesignPatternInfo;
 import hu.csega.depi.showcase.framework.ShowcaseWindow;
 import hu.csega.depi.showcase.patterns.memento.impl.Caretaker;
 
+/**
+ * In this example the user can draw on the canvas, where every change is logged
+ * via a snapshot of the canvas into a queue. The undo-redo feature is implemented
+ * by moving around in these snapshot queues.
+ */
 public class ShowMementoPattern extends ShowcaseWindow {
 
 	protected ShowMementoPattern() {

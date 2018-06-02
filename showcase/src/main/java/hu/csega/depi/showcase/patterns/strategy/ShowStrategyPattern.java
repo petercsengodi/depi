@@ -14,6 +14,13 @@ import hu.csega.depi.showcase.patterns.strategy.impl.SortingByLength;
 import hu.csega.depi.showcase.patterns.strategy.impl.SortingByRedness;
 import hu.csega.depi.showcase.patterns.strategy.impl.SortingStrategy;
 
+/**
+ * In this example we have a common sorting algorithm (bubble), but it may use
+ * various kind of sorting based on what we define as important feature for
+ * the sorting. The different kinds are implemented as strategies. Once started,
+ * the sorting algorithm is continuously on-going, and we are able to replace
+ * the sorting strategy on-the-fly.
+ */
 public class ShowStrategyPattern extends ShowcaseWindow {
 
 	protected ShowStrategyPattern() {
