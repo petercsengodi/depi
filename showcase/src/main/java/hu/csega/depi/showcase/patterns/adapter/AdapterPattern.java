@@ -3,6 +3,10 @@ package hu.csega.depi.showcase.patterns.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The purpose of applying the Adapter pattern here is that we would like to use
+ * an already fully implemented List object as a Stack (an interface we identified).
+ */
 public class AdapterPattern {
 
 	public interface Stack {
